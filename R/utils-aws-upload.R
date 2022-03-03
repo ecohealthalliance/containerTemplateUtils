@@ -79,7 +79,7 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 }
 
 aws_s3_upload_single <- function(path, key = basename(path), bucket,
-                                 check = TRUE, svc = s3()) {
+                                 check = TRUE, svc = paws::s3()) {
   if (check) {
     local_hash <- paste0('"', tools::md5sum(path), '"')
     s3_obj <- svc$list_objects_v2(Bucket = bucket, Prefix = key)$Contents |>

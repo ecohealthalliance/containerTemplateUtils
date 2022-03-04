@@ -4,14 +4,25 @@
 \alias{send_email_update}
 \title{Send email alerts to updated automation reports}
 \usage{
-send_email_update(to, from = "rsconnect@ecohealthalliance.org", test = FALSE)
+send_email_update(
+  to,
+  from = "rsconnect@ecohealthalliance.org",
+  project_name,
+  attach = FALSE,
+  test = FALSE
+)
 }
 \arguments{
 \item{to}{A vector of email addresses serving as primary recipients for the
 message.}
 
-\item{from}{The email address of the sender. Default is
-\code{rsconnectatecohealthalliance.org}.}
+\item{from}{The email address of the sender.}
+
+\item{project_name}{String. Name of the project to use in email subject and body text.}
+
+\item{attach}{Logical. Should reports be attached to email? Default is
+FALSE. If TRUE, all HTML reports found in \emph{"outputs"} folder will be
+attached to email.}
 
 \item{test}{Logical. Is this an email alert for testing automation reports?
 Default is FALSE.}

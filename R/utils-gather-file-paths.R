@@ -5,6 +5,8 @@
 #' @param pattern string. regex pattern to match desired file paths
 #'
 #' @return a list of file paths
+#' @export get_file_paths
+#'
 get_file_paths <- function(tar_obj,pattern,...){
 
   list_tars <- list(tar_obj,...)

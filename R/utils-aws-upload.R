@@ -15,6 +15,9 @@
 #'
 #' @return A list, each element being having the key and etag (hash) of uploaded
 #'   files
+#'
+#' @export aws_s3_upload
+#'
 aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
                           check = TRUE, error = FALSE) {
 

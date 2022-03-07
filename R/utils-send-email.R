@@ -12,7 +12,7 @@
 #'
 #' @return Invisible. Update email sent to list of recipients in `to`
 #'
-#'
+#' @export send_email_update
 
 send_email_update <- function(to,
                               from = "rsconnect@ecohealthalliance.org",

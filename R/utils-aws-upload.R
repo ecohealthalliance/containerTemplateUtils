@@ -12,6 +12,8 @@
 #' @param error Whether error out if the file is missing, folder is empty, or
 #'   system environment variables are missing. Otherwise a message will print
 #'   but an empty list will be returned.
+#' @param mime_type String. Provide a filetype from [mime::mimemap()] (e.g. "html")
+#'  or use "guess"to guess the mimetype.
 #'
 #' @return A list, each element being having the key and etag (hash) of uploaded
 #'   files
@@ -19,7 +21,7 @@
 #' @export aws_s3_upload
 #'
 aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
-                          check = TRUE, error = FALSE) {
+                          check = TRUE, error = FALSE, mime_type = "guess") {
 
   if (any(Sys.getenv(c("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION")) == "")) {
     msg <- paste(
@@ -36,8 +38,14 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 
   if (length(path) > 1) {
     stopifnot(length(path) == length(key))
-    out <- mapply(aws_s3_upload, path = path, key = key,
-                  MoreArgs = list(bucket = bucket, prefix = prefix, check = check, error = error),
+    out <- mapply(aws_s3_upload,
+                  path = path,
+                  key = key,
+                  mime_type = mime_type,
+                  MoreArgs = list(bucket = bucket,
+                                  prefix = prefix,
+                                  check = check,
+                                  error = error),
                   SIMPLIFY = FALSE)
     return(Reduce(c, unname(out), list()))
 
@@ -54,7 +62,7 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 
   svc <- paws::s3()
   if (file.exists(path) && !dir.exists(path)) {
-    out <- list(aws_s3_upload_single(path, paste0(prefix, key), bucket, check, svc))
+    out <- list(aws_s3_upload_single(path, paste0(prefix, key), bucket, check, svc, mime_type))
   } else if (file.exists(path) && dir.exists(path)) {
     files <- list.files(path, recursive = TRUE, full.names = TRUE, all.files = TRUE)
 
@@ -72,6 +80,7 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 
     out <- mapply(aws_s3_upload_single,
                   path = files, key = keys,
+                  mime_type = mime_type,
                   MoreArgs = list(bucket = bucket, check = check, svc = svc),
                   SIMPLIFY = FALSE
     ) |>
@@ -82,7 +91,7 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 }
 
 aws_s3_upload_single <- function(path, key = basename(path), bucket,
-                                 check = TRUE, svc = paws::s3()) {
+                                 check = TRUE, svc = paws::s3(), mime_type = "guess") {
   if (check) {
     local_hash <- paste0('"', tools::md5sum(path), '"')
     s3_obj <- svc$list_objects_v2(Bucket = bucket, Prefix = key)$Contents |>
@@ -93,7 +102,12 @@ aws_s3_upload_single <- function(path, key = basename(path), bucket,
       return(list(key = s3_obj$Key, etag = s3_obj$ETag))
     }
 
-    content_type = mime::guess_type(path)
+    if(mime_type == "guess"){
+      content_type <- mime::guess_type(path)
+    } else {
+      content_type <- mime::mimemap[mime_type]
+    }
+
     resp <- svc$put_object(
       Body = path,
       Bucket = bucket,

@@ -62,7 +62,7 @@ send_email_update <- function(to,
       "{project_name} Automated Reports for ", {readable_date_time}
     )
 
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and")
+    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
 
     email <- blastula::compose_email(
       body = glue::glue(

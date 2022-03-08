@@ -47,7 +47,7 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
                                   prefix = prefix,
                                   check = check,
                                   error = error,
-                                  file_type = file_type,),
+                                  file_type = file_type),
                   SIMPLIFY = FALSE)
     return(Reduce(c, unname(out), list()))
 

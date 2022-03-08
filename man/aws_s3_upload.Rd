@@ -11,7 +11,7 @@ aws_s3_upload(
   prefix = "",
   check = TRUE,
   error = FALSE,
-  mime_type = "guess"
+  file_type = "guess"
 )
 }
 \arguments{
@@ -33,8 +33,8 @@ and skip uploading. Defaults to TRUE}
 system environment variables are missing. Otherwise a message will print
 but an empty list will be returned.}
 
-\item{mime_type}{String. Provide a filetype from \code{\link[mime:mimemap]{mime::mimemap()}} (e.g. "html")
-or use "guess"to guess the mimetype.}
+\item{file_type}{String. Provide a file type from \code{\link[mime:mimemap]{mime::mimemap()}} (e.g. "html","csv")
+or provide "guess"to call \code{\link[mime:guess_type]{mime::guess_type()}}.}
 }
 \value{
 A list, each element being having the key and etag (hash) of uploaded

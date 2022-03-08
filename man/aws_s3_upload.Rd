@@ -10,7 +10,8 @@ aws_s3_upload(
   key = basename(path),
   prefix = "",
   check = TRUE,
-  error = FALSE
+  error = FALSE,
+  file_type = "guess"
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ and skip uploading. Defaults to TRUE}
 \item{error}{Whether error out if the file is missing, folder is empty, or
 system environment variables are missing. Otherwise a message will print
 but an empty list will be returned.}
+
+\item{file_type}{String. Provide a file type from \code{\link[mime:mimemap]{mime::mimemap()}} (e.g. "html","csv")
+or provide "guess"to call \code{\link[mime:guess_type]{mime::guess_type()}}.}
 }
 \value{
 A list, each element being having the key and etag (hash) of uploaded

@@ -46,10 +46,12 @@ send_email_update <- function(to,
       "Testing {project_name} Automated Reports for ", {readable_date_time}
     )
 
+    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
+
     email <- blastula::compose_email(
       body = glue::glue(
         "The test automation reports can be viewed here: \n\n",
-        {report_links}, "\n\n",
+        {report_links_collapse}, "\n\n",
         "A copy/copies of the {project_name} automated report/s is/are also attached. \n\n"
       ) |>
         blastula::md()

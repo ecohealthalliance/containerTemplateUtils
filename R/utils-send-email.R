@@ -7,7 +7,8 @@
 #'   FALSE. If TRUE, all HTML reports found in *"outputs"* folder will be
 #'   attached to email.
 #' @param test Logical. Is this an email alert for testing automation reports?
-#'   Default is FALSE.
+#'   Default is FALSE. If TRUE, subject includes test and upload path will include
+#'   the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)
 #' @param project_name String. Name of the project to use in email subject and body text.
 #'
 #' @return Invisible. Update email sent to list of recipients in `to`

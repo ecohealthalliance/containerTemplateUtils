@@ -25,7 +25,8 @@ FALSE. If TRUE, all HTML reports found in \emph{"outputs"} folder will be
 attached to email.}
 
 \item{test}{Logical. Is this an email alert for testing automation reports?
-Default is FALSE.}
+Default is FALSE. If TRUE, subject includes test and upload path will include
+the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)}
 }
 \value{
 Invisible. Update email sent to list of recipients in \code{to}

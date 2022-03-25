@@ -17,6 +17,8 @@ get_file_paths <- function(tar_obj,pattern,...){
 
   if(length(files) == 0){
     stop("No files found")
+  } else {
+    cat(files)
   }
 
   return(files)

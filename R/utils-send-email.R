@@ -85,7 +85,7 @@ send_email_update <- function(to,
 
   ## Add attachements
   if (attach) {
-    for (i in list.files("outputs", pattern = "\\.html$", full.names = TRUE)) {
+    for (i in list.files(path = path, pattern = pattern, full.names = TRUE)) {
       email <- email |>
         blastula::add_attachment(file = i)
     }

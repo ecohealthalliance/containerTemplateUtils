@@ -10,6 +10,8 @@
 #'   Default is FALSE. If TRUE, subject includes test and upload path will include
 #'   the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)
 #' @param project_name String. Name of the project to use in email subject and body text.
+#' @param path String. Name of folder or file path for attachment items
+#' @param pattern String. Regex pattern to select specific files in path.
 #'
 #' @return Invisible. Update email sent to list of recipients in `to`
 #'
@@ -19,7 +21,9 @@ send_email_update <- function(to,
                               from = "rsconnect@ecohealthalliance.org",
                               project_name,
                               attach = FALSE,
-                              test = FALSE) {
+                              test = FALSE,
+                              path = "outputs",
+                              pattern= "\\.html") {
   ## Set SMTP server credentials
   email_credentials <- blastula::creds_envvar(
     user = from,
@@ -32,7 +36,7 @@ send_email_update <- function(to,
   readable_date_time <- blastula::add_readable_time()
 
   ## List out reports found in "outputs" folder
-  reports <- list.files("outputs", pattern = "\\.html")
+  reports <- list.files(path, pattern = pattern)
 
   ## Create links to HTML reports and create email
   if (test) {

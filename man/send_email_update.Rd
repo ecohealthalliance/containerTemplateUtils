@@ -9,7 +9,9 @@ send_email_update(
   from = "rsconnect@ecohealthalliance.org",
   project_name,
   attach = FALSE,
-  test = FALSE
+  test = FALSE,
+  path = "outputs",
+  pattern = "\\\\.html"
 )
 }
 \arguments{
@@ -27,6 +29,10 @@ attached to email.}
 \item{test}{Logical. Is this an email alert for testing automation reports?
 Default is FALSE. If TRUE, subject includes test and upload path will include
 the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)}
+
+\item{path}{String. Name of folder or file path for attachment items}
+
+\item{pattern}{String. Regex pattern to select specific files in path.}
 }
 \value{
 Invisible. Update email sent to list of recipients in \code{to}

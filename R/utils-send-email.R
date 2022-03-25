@@ -13,6 +13,8 @@
 #' @param path String. Name of folder or file path for attachment items
 #' @param pattern String. Regex pattern to select specific files in path.
 #'
+#' @seealso `browseVignettes("blastula")`
+#'
 #' @return Invisible. Update email sent to list of recipients in `to`
 #'
 #' @export send_email_update

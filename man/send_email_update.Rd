@@ -40,3 +40,6 @@ Invisible. Update email sent to list of recipients in \code{to}
 \description{
 Send email alerts to updated automation reports
 }
+\seealso{
+\code{browseVignettes("blastula")}
+}

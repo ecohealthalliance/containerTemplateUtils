@@ -3,3 +3,4 @@
 export(aws_s3_upload)
 export(get_file_paths)
 export(send_email_update)
+export(send_email_update_tar)

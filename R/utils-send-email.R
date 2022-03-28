@@ -191,7 +191,7 @@ send_email_update_tar <- function(to,
 
   ## Add attachements
   if (attach) {
-    for (i in target) {
+    for (i in reports) {
       email <- email |>
         blastula::add_attachment(file = i)
     }

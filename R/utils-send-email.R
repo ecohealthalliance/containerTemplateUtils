@@ -118,6 +118,8 @@ send_email_update <- function(to,
 #' @param project_name String. Name of the project to use in email subject and body text.
 #' @param pattern String. Regex pattern to select specific files in path.
 #' @param target Targets object. List of file paths.
+#' @param use_hyperlinks Logical. If TRUE, a hyperlink is provided instead of the
+#' the raw url to the report.
 #'
 #' @seealso `browseVignettes("blastula")`
 #'
@@ -128,6 +130,7 @@ send_email_update <- function(to,
 send_email_update_tar <- function(to,
                               from = "rsconnect@ecohealthalliance.org",
                               project_name,
+                              use_hyperlinks = FALSE,
                               attach = FALSE,
                               test = FALSE,
                               target,
@@ -146,14 +149,16 @@ send_email_update_tar <- function(to,
   ## List out reports found in target object
   reports <- target[grepl(pattern = pattern,x = target)]
 
-  ## Create links to HTML reports and create email
+  ## Create links to HTML reports and create email ----
   if (test) {
     report_links <- sprintf("%s/%s/outputs/%s\n",
                             Sys.getenv("URL_PREFIX"),
                             Sys.getenv("GITHUB_REF"),
                             basename(reports) )
 
-
+    if(hyperlink){
+      report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
+    }
     subject <- glue::glue(
       "Testing {project_name} Automated Reports for ", {readable_date_time}
     )
@@ -172,6 +177,10 @@ send_email_update_tar <- function(to,
     report_links <- paste0(
       Sys.getenv("URL_PREFIX"), "/", basename(reports), "\n"
     )
+
+    if(hyperlink){
+      report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
+    }
 
     subject <- glue::glue(
       "{project_name} Automated Reports for ", {readable_date_time}

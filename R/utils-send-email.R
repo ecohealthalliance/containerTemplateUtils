@@ -169,7 +169,8 @@ send_email_update_tar <- function(to,
       body = glue::glue(
         "The test automation reports can be viewed here: \n\n",
         {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached. \n\n"
+        "A copy/copies of the {project_name} automated report/s is/are also attached.
+        For the best viewing experience, download the report before opening.\n\n"
       ) |>
         blastula::md()
     )
@@ -192,7 +193,8 @@ send_email_update_tar <- function(to,
       body = glue::glue(
         "The {project_name} automated reports can be viewed here: \n\n",
         {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached. \n\n"
+        "A copy/copies of the {project_name} automated report/s is/are also attached.
+        For the best viewing experience, download the report before opening. \n\n"
       ) |>
         blastula::md()
     )

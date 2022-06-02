@@ -156,7 +156,7 @@ send_email_update_tar <- function(to,
                             Sys.getenv("GITHUB_REF"),
                             basename(reports) )
 
-    if(hyperlink){
+    if(use_hyperlinks){
       report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
     }
     subject <- glue::glue(
@@ -178,7 +178,7 @@ send_email_update_tar <- function(to,
       Sys.getenv("URL_PREFIX"), "/", basename(reports), "\n"
     )
 
-    if(hyperlink){
+    if(use_hyperlinks){
       report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
     }
 

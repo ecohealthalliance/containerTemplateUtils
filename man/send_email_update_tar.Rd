@@ -8,6 +8,7 @@ send_email_update_tar(
   to,
   from = "rsconnect@ecohealthalliance.org",
   project_name,
+  use_hyperlinks = FALSE,
   attach = FALSE,
   test = FALSE,
   target,
@@ -21,6 +22,9 @@ message.}
 \item{from}{The email address of the sender.}
 
 \item{project_name}{String. Name of the project to use in email subject and body text.}
+
+\item{use_hyperlinks}{Logical. If TRUE, a hyperlink is provided instead of the
+the raw url to the report.}
 
 \item{attach}{Logical. Should reports be attached to email? Default is
 FALSE. If TRUE, all HTML reports found in \emph{"outputs"} folder will be

@@ -118,8 +118,8 @@ send_email_update <- function(to,
 #' @param project_name String. Name of the project to use in email subject and body text.
 #' @param pattern String. Regex pattern to select specific files in path.
 #' @param target Targets object. List of file paths.
-#' @param use_hyperlinks Logical. If TRUE, a hyperlink is provided instead of the
-#' the raw url to the report.
+#' @param use_hyperlinks Logical. If TRUE, a hyperlink using the file name is provided instead of the
+#' the full url of the report.
 #'
 #' @seealso `browseVignettes("blastula")`
 #'

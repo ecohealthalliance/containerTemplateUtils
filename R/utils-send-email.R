@@ -155,6 +155,15 @@ send_email_update_tar <- function(to,
   reports <- target[grepl(pattern = pattern,x = target)]
 
   ## Create links to HTML reports and create email ----
+
+  # hyperlink text
+
+  hl_text <- sprintf("Current %s",basename(reports))
+
+  if(is.character(hyperlinks_text)){
+    hl_text <- hyperlinks_text
+  }
+
   if (test) {
     report_links <- sprintf("%s/%s/outputs/%s\n",
                             Sys.getenv("URL_PREFIX"),
@@ -162,12 +171,6 @@ send_email_update_tar <- function(to,
                             basename(reports) )
 
     if(use_hyperlinks){
-      hl_text <- sprintf("Current %s",basename(reports))
-
-      if(is.character(hyperlinks_text)){
-        hl_text <- hyperlinks_text
-      }
-
       report_links <- sprintf("[%s](%s)",hl_text,report_links )
     }
     subject <- glue::glue(
@@ -191,7 +194,7 @@ send_email_update_tar <- function(to,
     )
 
     if(use_hyperlinks){
-      report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
+      report_links <- sprintf("[%s](%s)",hl_text,report_links )
     }
 
     subject <- glue::glue(

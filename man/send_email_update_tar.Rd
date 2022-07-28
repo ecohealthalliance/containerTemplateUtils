@@ -9,6 +9,7 @@ send_email_update_tar(
   from = "rsconnect@ecohealthalliance.org",
   project_name,
   use_hyperlinks = FALSE,
+  hyperlinks_text = NULL,
   attach = FALSE,
   test = FALSE,
   target,
@@ -23,8 +24,12 @@ message.}
 
 \item{project_name}{String. Name of the project to use in email subject and body text.}
 
-\item{use_hyperlinks}{Logical. If TRUE, a hyperlink is provided instead of the
-the raw url to the report.}
+\item{use_hyperlinks}{Logical. If TRUE, a hyperlink using the file name or custom text is provided instead of the
+the full url of the report.}
+
+\item{hyperlinks_text}{String.  NULL, hyperlink will be Current_ReportBasename
+eg Current_MyMarkdownReport.html. If a string or vector of strings are provided
+those will be used for the text in the hyperlink.}
 
 \item{attach}{Logical. Should reports be attached to email? Default is
 FALSE. If TRUE, all HTML reports found in \emph{"outputs"} folder will be

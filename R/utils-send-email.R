@@ -202,14 +202,24 @@ send_email_update_tar <- function(to,
     )
 
     report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
-
-    email <- blastula::compose_email(
-      body = glue::glue(
+    n_reports <- length(report_links)
+    if(attach){
+      body <- cli::pluralize(
+        "Please find {n_reports} report{?s} attached.
+         For the best viewing experience, download the report before opening. \n\n",
         "The {project_name} automated reports can be viewed here: \n\n",
         {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached.
-        For the best viewing experience, download the report before opening. \n\n"
-      ) |>
+      )
+    } else {
+      body <-cli::pluralize(
+        "The {project_name} automated reports can be viewed here: \n\n",
+        {report_links_collapse}, "\n\n",
+      )
+    }
+
+
+    email <- blastula::compose_email(
+      body = body |>
         blastula::md()
     )
   }

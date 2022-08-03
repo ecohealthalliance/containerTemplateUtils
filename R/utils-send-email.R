@@ -164,65 +164,52 @@ send_email_update_tar <- function(to,
     hl_text <- hyperlinks_text
   }
 
+  test_warning<- ""
+
   if (test) {
+    test_warning <- "**TEST** "
+    # generate test report links
     report_links <- sprintf("%s/%s/outputs/%s\n",
                             Sys.getenv("URL_PREFIX"),
                             Sys.getenv("GITHUB_REF"),
                             basename(reports) )
-
-    if(use_hyperlinks){
-      report_links <- sprintf("[%s](%s)",hl_text,report_links )
-    }
-    subject <- glue::glue(
-      "Testing {project_name} Automated Reports for ", {readable_date_time}
-    )
-
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
-
-    email <- blastula::compose_email(
-      body = glue::glue(
-        "The test automation reports can be viewed here: \n\n",
-        {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached.
-        For the best viewing experience, download the report before opening.\n\n"
-      ) |>
-        blastula::md()
-    )
   } else {
     report_links <- paste0(
       Sys.getenv("URL_PREFIX"), "/", basename(reports), "\n"
     )
+  }
 
-    if(use_hyperlinks){
-      report_links <- sprintf("[%s](%s)",hl_text,report_links )
-    }
+  if(use_hyperlinks){
+    report_links <- sprintf("[%s](%s)",hl_text,report_links )
+  }
 
-    subject <- glue::glue(
-      "{project_name} Automated Reports for ", {readable_date_time}
-    )
+  subject <- glue::glue(
+    "{test_warning}{project_name} Automated Reports for ", {readable_date_time}
+  )
 
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
-    n_reports <- length(report_links)
-    if(attach){
-      body <- cli::pluralize(
-        "Please find {n_reports} report{?s} attached.
+  report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
+  n_reports <- length(report_links)
+  if(attach){
+    body <- cli::pluralize(
+      "{test_warning}Please find {n_reports} report{?s} attached.
          For the best viewing experience, download the report before opening. \n\n",
-        "The {project_name} automated reports can be viewed here: \n\n",
-        {report_links_collapse}, "\n\n",
-      )
-    } else {
-      body <-cli::pluralize(
-        "The {project_name} automated reports can be viewed here: \n\n",
-        {report_links_collapse}, "\n\n",
-      )
-    }
-
-
-    email <- blastula::compose_email(
-      body = body |>
-        blastula::md()
+      "The {project_name} automated reports can be viewed here: \n\n",
+      {report_links_collapse}, "\n\n",
+    )
+  } else {
+    body <-cli::pluralize(
+      "{test_warning}The {project_name} automated reports can be viewed here: \n\n",
+      {report_links_collapse}, "\n\n",
     )
   }
+
+
+  email <- blastula::compose_email(
+    body = body |>
+      blastula::md()
+  )
+
+
 
   ## Add attachements
   if (attach) {

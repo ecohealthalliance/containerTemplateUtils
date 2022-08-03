@@ -118,8 +118,12 @@ send_email_update <- function(to,
 #' @param project_name String. Name of the project to use in email subject and body text.
 #' @param pattern String. Regex pattern to select specific files in path.
 #' @param target Targets object. List of file paths.
-#' @param use_hyperlinks Logical. If TRUE, a hyperlink using the file name is provided instead of the
+#' @param use_hyperlinks Logical. If TRUE, a hyperlink using the file name or custom text is provided instead of the
 #' the full url of the report.
+#' @param hyperlinks_text String.  NULL, hyperlink will be Current_ReportBasename
+#'  eg Current_MyMarkdownReport.html. If a string or vector of strings are provided
+#'  those will be used for the text in the hyperlink.
+#'
 #'
 #' @seealso `browseVignettes("blastula")`
 #'
@@ -131,6 +135,7 @@ send_email_update_tar <- function(to,
                               from = "rsconnect@ecohealthalliance.org",
                               project_name,
                               use_hyperlinks = FALSE,
+                              hyperlinks_text = NULL,
                               attach = FALSE,
                               test = FALSE,
                               target,
@@ -150,55 +155,61 @@ send_email_update_tar <- function(to,
   reports <- target[grepl(pattern = pattern,x = target)]
 
   ## Create links to HTML reports and create email ----
+
+  # hyperlink text
+
+  hl_text <- sprintf("Current %s",basename(reports))
+
+  if(is.character(hyperlinks_text)){
+    hl_text <- hyperlinks_text
+  }
+
+  test_warning<- ""
+
   if (test) {
+    test_warning <- "**TEST** "
+    # generate test report links
     report_links <- sprintf("%s/%s/outputs/%s\n",
                             Sys.getenv("URL_PREFIX"),
                             Sys.getenv("GITHUB_REF"),
                             basename(reports) )
-
-    if(use_hyperlinks){
-      report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
-    }
-    subject <- glue::glue(
-      "Testing {project_name} Automated Reports for ", {readable_date_time}
-    )
-
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
-
-    email <- blastula::compose_email(
-      body = glue::glue(
-        "The test automation reports can be viewed here: \n\n",
-        {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached.
-        For the best viewing experience, download the report before opening.\n\n"
-      ) |>
-        blastula::md()
-    )
   } else {
     report_links <- paste0(
       Sys.getenv("URL_PREFIX"), "/", basename(reports), "\n"
     )
+  }
 
-    if(use_hyperlinks){
-      report_links <- sprintf("[Current %s](%s)",basename(reports),report_links )
-    }
+  if(use_hyperlinks){
+    report_links <- sprintf("[%s](%s)",hl_text,report_links )
+  }
 
-    subject <- glue::glue(
-      "{project_name} Automated Reports for ", {readable_date_time}
+  subject <- glue::glue(
+    "{test_warning}{project_name} Automated Reports for ", {readable_date_time}
+  )
+
+  report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
+  n_reports <- length(report_links)
+  if(attach){
+    body <- cli::pluralize(
+      "{test_warning}Please find {n_reports} report{?s} attached.
+         For the best viewing experience, download the report before opening. \n\n",
+      "The {project_name} automated reports can be viewed here: \n\n",
+      {report_links_collapse}, "\n\n",
     )
-
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
-
-    email <- blastula::compose_email(
-      body = glue::glue(
-        "The {project_name} automated reports can be viewed here: \n\n",
-        {report_links_collapse}, "\n\n",
-        "A copy/copies of the {project_name} automated report/s is/are also attached.
-        For the best viewing experience, download the report before opening. \n\n"
-      ) |>
-        blastula::md()
+  } else {
+    body <-cli::pluralize(
+      "{test_warning}The {project_name} automated reports can be viewed here: \n\n",
+      {report_links_collapse}, "\n\n",
     )
   }
+
+
+  email <- blastula::compose_email(
+    body = body |>
+      blastula::md()
+  )
+
+
 
   ## Add attachements
   if (attach) {

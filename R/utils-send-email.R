@@ -52,7 +52,7 @@ send_email_update <- function(to,
       "Testing {project_name} Automated Reports for ", {readable_date_time}
     )
 
-    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
+    report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = " and ")
 
     email <- blastula::compose_email(
       body = glue::glue(
@@ -123,7 +123,9 @@ send_email_update <- function(to,
 #' @param hyperlinks_text String.  NULL, hyperlink will be Current_ReportBasename
 #'  eg Current_MyMarkdownReport.html. If a string or vector of strings are provided
 #'  those will be used for the text in the hyperlink.
-#'
+#' @param additional_body_text String. Any additional text to be included in the body.
+#' This text is added to the end of the email body. You can use markdown to format
+#' the text.
 #'
 #' @seealso `browseVignettes("blastula")`
 #'
@@ -139,6 +141,7 @@ send_email_update_tar <- function(to,
                               attach = FALSE,
                               test = FALSE,
                               target,
+                              additional_body_text = "",
                               pattern= "\\.html") {
   ## Set SMTP server credentials
   email_credentials <- blastula::creds_envvar(
@@ -187,7 +190,7 @@ send_email_update_tar <- function(to,
     "{test_warning}{project_name} Automated Reports for ", {readable_date_time}
   )
 
-  report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = "and ")
+  report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = " and ")
   n_reports <- length(report_links)
   if(attach){
     body <- cli::pluralize(
@@ -203,9 +206,12 @@ send_email_update_tar <- function(to,
     )
   }
 
+  # add any additional text
+  body_final <- sprintf("%s\n\n%s",body, additional_body_text)
+
 
   email <- blastula::compose_email(
-    body = body |>
+    body = body_final |>
       blastula::md()
   )
 

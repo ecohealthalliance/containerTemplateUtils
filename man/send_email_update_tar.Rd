@@ -13,6 +13,7 @@ send_email_update_tar(
   attach = FALSE,
   test = FALSE,
   target,
+  additional_body_text = "",
   pattern = "\\\\.html"
 )
 }
@@ -40,6 +41,10 @@ Default is FALSE. If TRUE, subject includes test and upload path will include
 the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)}
 
 \item{target}{Targets object. List of file paths.}
+
+\item{additional_body_text}{String. Any additional text to be included in the body.
+This text is added to the end of the email body. You can use markdown to format
+the text.}
 
 \item{pattern}{String. Regex pattern to select specific files in path.}
 }

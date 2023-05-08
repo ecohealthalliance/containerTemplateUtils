@@ -1,6 +1,6 @@
 Package: containerTemplateUtils
 Title: Provides utility functions to the container-template repository
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
    c(person(given = "Collin",
            family = "Schwantes",

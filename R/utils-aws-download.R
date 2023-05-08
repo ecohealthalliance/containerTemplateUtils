@@ -41,8 +41,8 @@ aws_s3_download <- function(path, bucket, key,
   if(!all(key_check) & any(key_check)){
     msg <- paste(
       "key variable is a mix of files and folders in aws. Please provide files
-      or folders. Error may also be triggered by unconventional folder naming
-      conventions e.g. folder/sub.folder/file.ext"
+      or folders. Error may also be triggered by unconventional folder or file naming
+      conventions e.g. folder/sub.folder/file.ext or folder/Bucket_test (file with no extension) "
     )
     if (error) {
       stop(msg)

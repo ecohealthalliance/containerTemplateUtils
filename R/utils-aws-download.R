@@ -1,5 +1,9 @@
 #' download files or folders to AWS
 #'
+#' Providing a key that is a folder and path that is a folder will result in
+#' the whole folder being copied to the path location. If you supply "" to key,
+#' the whole bucket will be downloaded.
+#'
 #' @param path String. Path to download location. Could be a folder or specific file(s)
 #' @param bucket The name of the bucket to be downloaded from
 #' @param key The key or name for the file or folder to be download from the bucket.
@@ -38,20 +42,10 @@ aws_s3_download <- function(path, bucket, key,
 
   # check if key is mix of files and folders
   # if NOT all files and any files
-  if(!all(key_check) & any(key_check)){
-    msg <- paste(
-      "key variable is a mix of files and folders in aws. Please provide files
-      or folders. Error may also be triggered by unconventional folder or file naming
-      conventions e.g. folder/sub.folder/file.ext or folder/Bucket_test (file with no extension) "
-    )
-    if (error) {
-      stop(msg)
-    } else {
-      warning(msg)
-      return(list())
-    }
-  }
 
+  check_for_mixed_path_types(check_vec = key_check,
+                             param_checked = "key",
+                             error = error)
 
   svc <- paws::s3()
 
@@ -63,6 +57,9 @@ aws_s3_download <- function(path, bucket, key,
 
     key_check <- check_for_file_extension(key)
 
+    # re check for fold/file mixed keys
+    check_for_mixed_path_types(check_vec = key_check, param_checked = "key",error = error)
+
   }
 
 
@@ -71,10 +68,18 @@ aws_s3_download <- function(path, bucket, key,
 
   if (length(key) > 1 & all(key_check)) {
 
-    # if path is file functions, should have same length as key; if dir, should
+    # if path is file names, should have same length as key; if dir, should
     # have length 1
 
     path_check <- check_for_file_extension(path)
+
+    ## if you supplied a key for a folder and directory, copy structure
+    ## from s3 to local folder
+    if(length(path_check) == 1 & !all(path_check)){
+      path <- sprintf("%s/%s",path,key)
+      path_check <- check_for_file_extension(path)
+    }
+
 
     stopifnot( (all(path_check) & length(path) == length(key)) |
                 (!path_check & length(path) == 1))
@@ -154,4 +159,21 @@ check_for_file_extension <- function(path){
   file_name <- basename(path)
   check <- grepl(".+\\.[[:alnum:]]+$",file_name)
   return(check)
+}
+
+check_for_mixed_path_types <- function(check_vec,param_checked,error ){
+  if(!all(check_vec) & any(check_vec)){
+    msg <- sprintf("%s variable is a mix of files and folders in aws. Please
+    provide files or folders. Error may also be triggered by unconventional
+    folder or file naming conventions e.g. folder/sub.folder/file.ext or
+                   folder/Bucket_test (file with no extension) ",
+                   param_checked
+    )
+    if (error) {
+      stop(msg)
+    } else {
+      warning(msg)
+      return(list())
+    }
+  }
 }

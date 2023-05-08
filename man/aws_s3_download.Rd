@@ -26,5 +26,7 @@ A list, each element  having the key, etag (hash), and path of downloaded
 files
 }
 \description{
-download files or folders to AWS
+Providing a key that is a folder and path that is a folder will result in
+the whole folder being copied to the path location. If you supply "" to key,
+the whole bucket will be downloaded.
 }

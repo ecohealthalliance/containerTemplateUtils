@@ -51,7 +51,7 @@ aws_s3_download <- function(path, bucket, key,
 
   if(all(!key_check)){
     # expand folders to base files
-    key <- svc$list_objects_v2(Bucket = Sys.getenv("AWS_BUCKET"), Prefix = key)$Contents |>
+    key <- svc$list_objects_v2(Bucket = bucket, Prefix = key)$Contents |>
       purrr::map(~ .x$Key) |>
       unlist(FALSE)
 

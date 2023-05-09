@@ -4,7 +4,14 @@
 \alias{aws_s3_download}
 \title{download files or folders to AWS}
 \usage{
-aws_s3_download(path, bucket, key, check = TRUE, error = FALSE)
+aws_s3_download(
+  path,
+  bucket,
+  key,
+  copy_s3_dir_structure = FALSE,
+  check = TRUE,
+  error = FALSE
+)
 }
 \arguments{
 \item{path}{String. Path to download location. Could be a folder or specific file(s)}
@@ -13,6 +20,9 @@ aws_s3_download(path, bucket, key, check = TRUE, error = FALSE)
 
 \item{key}{The key or name for the file or folder to be download from the bucket.
 Should end with "/" for folders. Use "" to download whole bucket.}
+
+\item{copy_s3_dir_structure}{Logical. Should the structure of the S3 bucket
+be recreated as sub directories to the path argument?}
 
 \item{check}{Whether to check if the exact file already exists in the download location
 and skip downloading. Defaults to TRUE}

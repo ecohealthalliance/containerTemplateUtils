@@ -2,7 +2,8 @@
 #'
 #' Providing a key that is a folder and path that is a folder will result in
 #' the whole folder being copied to the path location. If you supply "" to key,
-#' the whole bucket will be downloaded.
+#' the whole bucket will be downloaded. Use \code{copy_s3_dir_structure} to copy the
+#' bucket "directory" structure.
 #'
 #' @param path String. Path to download location. Could be a folder or specific file(s)
 #' @param bucket The name of the bucket to be downloaded from
@@ -13,13 +14,15 @@
 #' @param error Whether error out if the file is missing, folder is empty, or
 #'   system environment variables are missing. Otherwise a message will print
 #'   but an empty list will be returned.
+#' @param copy_s3_dir_structure Logical. Should the structure of the S3 bucket
+#' be recreated as sub directories to the path argument?
 #'
 #' @return A list, each element  having the key, etag (hash), and path of downloaded
 #'   files
 #'
 #' @export aws_s3_download
 #'
-aws_s3_download <- function(path, bucket, key,
+aws_s3_download <- function(path, bucket, key, copy_s3_dir_structure = FALSE,
                           check = TRUE, error = FALSE) {
 
   # check env vars
@@ -76,8 +79,10 @@ aws_s3_download <- function(path, bucket, key,
     ## if you supplied a key for a folder and directory, copy structure
     ## from s3 to local folder
     if(length(path_check) == 1 & !all(path_check)){
+      if(copy_s3_dir_structure){
       path <- sprintf("%s/%s",path,key)
       path_check <- check_for_file_extension(path)
+      }
     }
 
 

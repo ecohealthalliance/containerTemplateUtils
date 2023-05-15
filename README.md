@@ -7,9 +7,10 @@
 Provides utility functions for the [contianer-template repo](https://github.com/ecohealthalliance/container-template) from EHA
 
 # install instructions
-
+```
 remotes::install_github("ecohealthalliance/containerTemplateUtils")
-
+```
 or
-
+```
 renv::install("ecohealthalliance/containerTemplateUtils")
+```

@@ -113,7 +113,8 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
     # Create prefixed records (archive or branches)
     #keys <- paste0(prefix, gsub(paste0("^", basename(path)), key, files))
 
-    file_paths <- gsub(paste0("^", basename(path)), "", files)
+    ## drop the path argument from the key precursor
+    file_paths <- gsub(paste0("^", path), "", files)
 
     keys <- sprintf("%s/%s/%s",prefix,key,file_paths)
     keys <- gsub("/{2,}", "/", keys) ## correcting multiple slashes in key

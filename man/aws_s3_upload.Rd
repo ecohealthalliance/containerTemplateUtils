@@ -43,5 +43,9 @@ files
 \description{
 When uploading folders, the subdirectory structure will be preserved. To
 upload files from a folder without preserving the directory structure,
-pass a vector of file paths to the path arugment.
+pass a vector of file paths to the path argument.
+}
+\details{
+If you would like the change the directory structure, pass in a vector of
+file paths and a corresponding vector of keys.
 }

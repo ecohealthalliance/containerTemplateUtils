@@ -15,21 +15,21 @@ aws_s3_upload(
 )
 }
 \arguments{
-\item{path}{The path to the file(s) or folder(s) to be uploaded}
+\item{path}{String. The path to the file(s) or folder(s) to be uploaded}
 
-\item{bucket}{The name of the bucket to be uploaded to}
+\item{bucket}{String. The name of the bucket to be uploaded to}
 
-\item{key}{The key or name for the file or folder to take in the bucket.
-Should end with "/" for folders. Use "" to upload files in folder without
+\item{key}{String. The key or name for the file or folder to take in the bucket.
+Should end with "/" for folders. Use "" (empty string) to upload files in folder without
 top-level folder.}
 
-\item{prefix}{A prefix to prepend to the file or folder keys. Generally
+\item{prefix}{String. A prefix to prepend to the file or folder keys. Generally
 should end with "/"}
 
-\item{check}{Whether to check if the exact file already exists in the bucket
+\item{check}{Logical. Whether to check if the exact file already exists in the bucket
 and skip uploading. Defaults to TRUE}
 
-\item{error}{Whether error out if the file is missing, folder is empty, or
+\item{error}{Logical. Whether error out if the file is missing, folder is empty, or
 system environment variables are missing. Otherwise a message will print
 but an empty list will be returned.}
 
@@ -41,5 +41,7 @@ A list, each element being having the key and etag (hash) of uploaded
 files
 }
 \description{
-Upload files or folders to AWS
+When uploading folders, the subdirectory structure will be preserved. To
+upload files from a folder without preserving the directory structure,
+pass a vector of file paths to the path arugment.
 }

@@ -38,5 +38,6 @@ files
 \description{
 Providing a key that is a folder and path that is a folder will result in
 the whole folder being copied to the path location. If you supply "" to key,
-the whole bucket will be downloaded.
+the whole bucket will be downloaded. Use \code{copy_s3_dir_structure} to copy the
+bucket "directory" structure.
 }

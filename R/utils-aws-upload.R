@@ -1,15 +1,20 @@
 #' Upload files or folders to AWS
 #'
-#' @param path The path to the file(s) or folder(s) to be uploaded
-#' @param bucket The name of the bucket to be uploaded to
-#' @param key The key or name for the file or folder to take in the bucket.
-#'   Should end with "/" for folders. Use "" to upload files in folder without
+#'  When uploading folders, the subdirectory structure will be preserved. To
+#'  upload files from a folder without preserving the directory structure,
+#'  pass a vector of file paths to the path arugment.
+#'
+#'
+#' @param path String. The path to the file(s) or folder(s) to be uploaded
+#' @param bucket String. The name of the bucket to be uploaded to
+#' @param key String. The key or name for the file or folder to take in the bucket.
+#'   Should end with "/" for folders. Use "" (empty string) to upload files in folder without
 #'   top-level folder.
-#' @param prefix A prefix to prepend to the file or folder keys. Generally
+#' @param prefix String. A prefix to prepend to the file or folder keys. Generally
 #'   should end with "/"
-#' @param check Whether to check if the exact file already exists in the bucket
+#' @param check Logical. Whether to check if the exact file already exists in the bucket
 #'   and skip uploading. Defaults to TRUE
-#' @param error Whether error out if the file is missing, folder is empty, or
+#' @param error Logical. Whether error out if the file is missing, folder is empty, or
 #'   system environment variables are missing. Otherwise a message will print
 #'   but an empty list will be returned.
 #' @param file_type String. Provide a file type from [mime::mimemap()] (e.g. "html","csv")
@@ -53,22 +58,44 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
 
   }
 
-  if (!file.exists(path)) {
+
+  # Single path (directory or file) workflow
+
+  file_check <- utils::file_test(op = "-f",path)
+  dir_check <- utils::file_test(op = "-d",path)
+
+  # if neither the file nor the directory exist, break or warn
+  if (!file_check & !dir_check) {
     if (error) {
-      stop("File not found.")
+      err_msg <- glue::glue("Neither File nor Directory not found. Argument supplied
+                            to path does not appear to exist. {path}")
+      stop(err_msg)
     } else {
-      message("No file found. No upload, returning empty list")
+      msg <- glue::glue("Neither File nor Directory not found.  Argument supplied
+                            to path does not appear to exist. {path}
+
+                            Returning an empty list.")
+      message(msg)
       return(list())
     }
   }
 
+
+
   # single path workflow
   svc <- paws::s3()
 
-  # if the file exists and the dir does not,
-  if (file.exists(path) && !dir.exists(path)) {
-    out <- list(aws_s3_upload_single(path, paste0(prefix, key), bucket, check, svc, file_type))
-  } else if (file.exists(path) && dir.exists(path)) {
+  # if path is a single file
+  if (file_check) {
+    out <- list(aws_s3_upload_single(path = path,
+                                     key =  paste0(prefix, key),
+                                     bucket =  bucket,
+                                     check =  check,
+                                     svc =  svc,
+                                     file_type =  file_type))
+  }
+  # if path is a directory
+  if(dir_check){
     files <- list.files(path, recursive = TRUE, full.names = TRUE, all.files = TRUE)
 
     if (!length(files)) {
@@ -81,8 +108,12 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
     }
 
     # Create prefixed records (archive or branches)
-    keys <- paste0(prefix, gsub(paste0("^", basename(path)), key, files))
-    keys <- gsub("/+", "/", keys)
+    #keys <- paste0(prefix, gsub(paste0("^", basename(path)), key, files))
+
+    file_paths <- gsub(paste0("^", basename(path)), "", files)
+
+    keys <- sprintf("%s/%s/%s",prefix,key,file_paths)
+    keys <- gsub("/{2,}", "/", keys) ## correcting multiple slashes in key
 
     out <- mapply(aws_s3_upload_single,
                   path = files,

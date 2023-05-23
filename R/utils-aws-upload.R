@@ -193,11 +193,11 @@ aws_s3_upload <- function(path, bucket, key = basename(path), prefix = "",
   # if neither the file nor the directory exist, break or warn
   if (!file_check & !dir_check) {
     if (error) {
-      err_msg <- glue::glue("Neither File nor Directory not found. Argument supplied
+      err_msg <- glue::glue("Neither File nor Directory found. Argument supplied
                             to path does not appear to exist. {path}")
       stop(err_msg)
     } else {
-      msg <- glue::glue("Neither File nor Directory not found.  Argument supplied
+      msg <- glue::glue("Neither File nor Directory found.  Argument supplied
                             to path does not appear to exist. {path}
 
                             Returning an empty list.")

@@ -4,12 +4,17 @@
 \alias{create_git_prefix}
 \title{Create git prefix for file paths}
 \usage{
-create_git_prefix(branch = gert::git_branch(), path, ignore_if_main = TRUE)
+create_git_prefix(
+  branch = gert::git_branch(),
+  path = "",
+  ignore_if_main = TRUE
+)
 }
 \arguments{
-\item{branch}{String. Current branch of repo. Use "" if no prefix is desired/}
+\item{branch}{String. Current branch of repo.}
 
-\item{path}{String. Folder where}
+\item{path}{String. Folder where file should be uploaded. If an empty string
+is provided (default), the path argument will be ignored.}
 
 \item{ignore_if_main}{Logical. No prefixed added to files on main branch.}
 }

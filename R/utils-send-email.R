@@ -18,6 +18,7 @@
 #' @return Invisible. Update email sent to list of recipients in `to`
 #'
 #' @export send_email_update
+#'
 
 send_email_update <- function(to,
                               from = "rsconnect@ecohealthalliance.org",
@@ -110,14 +111,11 @@ send_email_update <- function(to,
 #'   message.
 #' @param from The email address of the sender.
 #' @param attach Logical. Should reports be attached to email? Default is
-#'   FALSE. If TRUE, all HTML reports found in *"outputs"* folder will be
-#'   attached to email.
+#'   FALSE. If TRUE, specify local files using the attachment_paths argument.
 #' @param test Logical. Is this an email alert for testing automation reports?
 #'   Default is FALSE. If TRUE, subject includes test and upload path will include
 #'   the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)
 #' @param project_name String. Name of the project to use in email subject and body text.
-#' @param pattern String. Regex pattern to select specific files in path.
-#' @param target Targets object. List of file paths.
 #' @param use_hyperlinks Logical. If TRUE, a hyperlink using the file name or custom text is provided instead of the
 #' the full url of the report.
 #' @param hyperlinks_text String.  NULL, hyperlink will be Current_ReportBasename
@@ -126,23 +124,66 @@ send_email_update <- function(to,
 #' @param additional_body_text String. Any additional text to be included in the body.
 #' This text is added to the end of the email body. You can use markdown to format
 #' the text.
+#' @param hyperlinks_url String. Url to used in the hyperlink or as raw text to
+#' link to file.
+#' @param attachment_paths String. Local file paths to be attachemed to the email.
 #'
 #' @seealso `browseVignettes("blastula")`
 #'
 #' @return Invisible. Update email sent to list of recipients in `to`
 #'
 #' @export send_email_update_tar
+#' @example
+#'
+#' \dontrun{
+#'
+#' upload_keys <-  containerTemplateUtils::aws_s3_upload(path = "R/",
+#'            key = "test-upload-function2/test/upload_empty_string/",
+#'            error = TRUE,
+#'            prefix = create_git_prefix(),
+#'            bucket =Sys.getenv("AWS_BUCKET"))
+#'
+#' keys <- purrr::map_chr(upload_keys,~.x$key)
+#'
+#' urls <- make_eha_secure_url(remote_path = keys)
+#'
+#' #### test email
+#'
+#' send_email_update_tar(to = "schwantes@ecohealthalliance.org",
+#'                       from = "schwantes@ecohealthalliance.org",
+#'                       project_name = "test_utils",
+#'                       use_hyperlinks = TRUE,
+#'                       hyperlinks_text = basename(keys),
+#'                       hyperlinks_url = urls,
+#'                       attach = FALSE,
+#'                       test = TRUE
+#' )
+#'
+#' ### test email with attachments
+#'
+#' send_email_update_tar(to = "schwantes@ecohealthalliance.org",
+#'                       from = "schwantes@ecohealthalliance.org",
+#'                       project_name = "test_utils_attachments",
+#'                       use_hyperlinks = TRUE,
+#'                       hyperlinks_text = basename(keys),
+#'                       hyperlinks_url = urls,
+#'                       attach = TRUE,
+#'                       test = TRUE,
+#'                       attachment_paths = list.files("R/",
+#'                                                     full.names = TRUE)
+#'
+#' }
 
 send_email_update_tar <- function(to,
-                              from = "rsconnect@ecohealthalliance.org",
+                              from = "automations@ecohealthalliance.org",
                               project_name,
                               use_hyperlinks = FALSE,
                               hyperlinks_text = NULL,
+                              hyperlinks_url = NULL,
                               attach = FALSE,
+                              attachment_paths,
                               test = FALSE,
-                              target,
-                              additional_body_text = "",
-                              pattern= "\\.html") {
+                              additional_body_text = "") {
   ## Set SMTP server credentials
   email_credentials <- blastula::creds_envvar(
     user = from,
@@ -154,36 +195,29 @@ send_email_update_tar <- function(to,
   ## Create human readable data and time
   readable_date_time <- blastula::add_readable_time()
 
-  ## List out reports found in target object
-  reports <- target[grepl(pattern = pattern,x = target)]
 
   ## Create links to HTML reports and create email ----
 
   # hyperlink text
 
-  hl_text <- sprintf("Current %s",basename(reports))
+  hl_text <- "Hyperlink"
 
   if(is.character(hyperlinks_text)){
     hl_text <- hyperlinks_text
   }
 
   test_warning<- ""
+  report_links <- hyperlinks_url
+
 
   if (test) {
     test_warning <- "**TEST** "
     # generate test report links
-    report_links <- sprintf("%s/%s/outputs/%s\n",
-                            Sys.getenv("URL_PREFIX"),
-                            Sys.getenv("GITHUB_REF"),
-                            basename(reports) )
-  } else {
-    report_links <- paste0(
-      Sys.getenv("URL_PREFIX"), "/", basename(reports), "\n"
-    )
   }
 
   if(use_hyperlinks){
     report_links <- sprintf("[%s](%s)",hl_text,report_links )
+
   }
 
   subject <- glue::glue(
@@ -191,7 +225,9 @@ send_email_update_tar <- function(to,
   )
 
   report_links_collapse <- glue::glue_collapse(report_links,sep = ", ",last = " and ")
+
   n_reports <- length(report_links)
+
   if(attach){
     body <- cli::pluralize(
       "{test_warning}Please find {n_reports} report{?s} attached.
@@ -219,7 +255,7 @@ send_email_update_tar <- function(to,
 
   ## Add attachements
   if (attach) {
-    for (i in reports) {
+    for (i in attachment_paths) {
       email <- email |>
         blastula::add_attachment(file = i)
     }

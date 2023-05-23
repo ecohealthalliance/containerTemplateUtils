@@ -28,8 +28,9 @@ get_file_paths <- function(tar_obj,pattern,...){
 #'
 #' Adds information about the git branch to the file path.
 #'
-#' @param branch String. Current branch of repo. Use "" if no prefix is desired/
-#' @param path String. Folder where
+#' @param branch String. Current branch of repo.
+#' @param path String. Folder where file should be uploaded. If an empty string
+#' is provided (default), the path argument will be ignored.
 #' @param ignore_if_main Logical. No prefixed added to files on main branch.
 #'
 #' @return String. Prefix for the file path.
@@ -43,7 +44,7 @@ get_file_paths <- function(tar_obj,pattern,...){
 #' # "refs/head/current/branch/example"
 #'
 create_git_prefix<- function(branch = gert::git_branch(),
-                             path,
+                             path = "",
                              ignore_if_main=TRUE){
   if(ignore_if_main & (gert::git_branch() == "main")){
     git_prefix = ""
@@ -58,7 +59,13 @@ create_git_prefix<- function(branch = gert::git_branch(),
     stop("branch must be class character")
   }
 
-  git_prefix <- sprintf("refs/heads/%s/%s/", branch, path)
+  git_prefix <- sprintf("refs/heads/%s/", branch)
+
+  if(path != ""){
+    git_prefix <- sprintf("%s%s/",git_prefix,path)
+  }
+  # remove extra backslashes
+  git_prefix <- gsub("/{2,}", "/", git_prefix)
 
   print(glue::glue("using git_prefix: {git_prefix}"))
 

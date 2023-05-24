@@ -6,15 +6,15 @@
 \usage{
 send_email_update_tar(
   to,
-  from = "rsconnect@ecohealthalliance.org",
+  from = "automations@ecohealthalliance.org",
   project_name,
   use_hyperlinks = FALSE,
   hyperlinks_text = NULL,
+  hyperlinks_url = NULL,
   attach = FALSE,
+  attachment_paths,
   test = FALSE,
-  target,
-  additional_body_text = "",
-  pattern = "\\\\.html"
+  additional_body_text = ""
 )
 }
 \arguments{
@@ -32,21 +32,21 @@ the full url of the report.}
 eg Current_MyMarkdownReport.html. If a string or vector of strings are provided
 those will be used for the text in the hyperlink.}
 
+\item{hyperlinks_url}{String. Url to used in the hyperlink or as raw text to
+link to file.}
+
 \item{attach}{Logical. Should reports be attached to email? Default is
-FALSE. If TRUE, all HTML reports found in \emph{"outputs"} folder will be
-attached to email.}
+FALSE. If TRUE, specify local files using the attachment_paths argument.}
+
+\item{attachment_paths}{String. Local file paths to be attachemed to the email.}
 
 \item{test}{Logical. Is this an email alert for testing automation reports?
 Default is FALSE. If TRUE, subject includes test and upload path will include
 the current git branch in the file path (e.g. https://project.secure.eha.io/refs/fix/missing_documentation/file.txt)}
 
-\item{target}{Targets object. List of file paths.}
-
 \item{additional_body_text}{String. Any additional text to be included in the body.
 This text is added to the end of the email body. You can use markdown to format
 the text.}
-
-\item{pattern}{String. Regex pattern to select specific files in path.}
 }
 \value{
 Invisible. Update email sent to list of recipients in \code{to}

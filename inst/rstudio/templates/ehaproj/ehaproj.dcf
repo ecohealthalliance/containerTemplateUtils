@@ -1,0 +1,4 @@
+Binding: mkrproj
+Title: EcoHealth Alliance Project
+Subtitle: Reproducible project with {targets}, {renv}, GitHub, and more...
+OpenFiles: _targets.R, README.Rmd

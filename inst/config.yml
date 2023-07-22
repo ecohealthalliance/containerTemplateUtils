@@ -1,0 +1,46 @@
+# This file defines all the user-specific config options
+- name: "activate.prompt"
+  type: "logical[1]"
+  default: true
+  description: >
+    Automatically prompt the user to activate the current project, if it does
+    not appear to already be activated? This is mainly useful to help ensure
+    that calls to `renv::snapshot()` and `renv::restore()` use the project
+    library. See `?renv::activate` for more details.
+
+- name: "autoloader.enabled"
+  type: "logical[1]"
+  default: true
+  description: >
+    Enable the renv auto-loader? When `FALSE`, renv will not not
+    automatically load a project containing an renv autoloader within
+    its `.Rprofile`. In addition, renv will not write out the project
+    auto-loader in calls to `renv::init()`.
+
+- name: "auto.snapshot"
+  type: "logical[1]"
+  default: false
+  description: >
+    Automatically snapshot changes to the project library when the project
+    dependencies change?
+
+- name: "parent.dir"
+  type: "character[1]"
+  default: "ask"
+  prompt: "Project parent directory: "
+  description: >
+    The parent directory for new projects to be created in.
+
+- name: "copy.method"
+  type: "*"
+  default: "auto"
+  description: >
+    The method to use when attempting to copy directories. See **Copy Methods**
+    for more information.
+
+- name: "connect.timeout"
+  type: "integer[1]"
+  default: 20
+  description: >
+    The amount of time to spend (in seconds) when attempting to download
+    a file. Only applicable when the `curl` downloader is used.

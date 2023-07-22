@@ -1,0 +1,3 @@
+[submodule "inst/ehaproj-template"]
+	path = inst/ehaproj-template
+	url = git@github.com:ecohealthalliance/container-template.git

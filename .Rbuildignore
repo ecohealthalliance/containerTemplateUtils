@@ -1,6 +1,10 @@
-^containerTemplateUtils\.Rproj$
+^ehaproj\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.github$
+inst/ehaproj-template/.git
+inst/ehaproj-template/.env_user
+^README\.Rmd$

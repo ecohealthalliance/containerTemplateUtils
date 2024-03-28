@@ -233,12 +233,12 @@ send_email_update_tar <- function(to,
       "{test_warning}Please find {n_reports} report{?s} attached.
          For the best viewing experience, download the report before opening. \n\n",
       "The {project_name} automated reports can be viewed here: \n\n",
-      {report_links_collapse}, "\n\n",
+      {report_links_collapse}, "\n\n"
     )
   } else {
     body <-cli::pluralize(
       "{test_warning}The {project_name} automated reports can be viewed here: \n\n",
-      {report_links_collapse}, "\n\n",
+      {report_links_collapse}, "\n\n"
     )
   }
 
